@@ -1,11 +1,11 @@
 from flask import Flask, request, jsonify, render_template
 import joblib
-from testcaseall import analyze_emotion 
+from test_case_2 import analyze_emotion 
 
 app = Flask(__name__)
 
 # Load the saved model
-model = joblib.load('models/depression_severity_model.pkl')
+model = joblib.load('models/random_forest_depression_model.pkl')
 
 @app.route('/')
 def home():
