@@ -22,7 +22,7 @@ def emotion_analysis_page():
     """Render the emotion analysis page or redirect to results if skipped."""
     if request.method == 'POST':
         text = request.form.get('text', '').strip()
-        severity = request.args.get('severity')
+        severity = request.args.get('severity', 'N/A')
 
         if text:
             predicted_emotion = analyze_emotion(text)
