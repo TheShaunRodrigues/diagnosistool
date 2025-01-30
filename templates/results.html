@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Assessment Results</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
+        h1 { color: #4CAF50; }
+        .container { width: 50%; margin: auto; padding: 20px; border: 1px solid #ddd; border-radius: 10px; }
+        .result { font-size: 20px; font-weight: bold; margin-top: 20px; }
+        .back-btn { margin-top: 20px; padding: 10px 20px; background: #4CAF50; color: white; border: none; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Assessment Results</h1>
+        <p class="result">Predicted Depression Severity: <strong>{{ severity }}</strong></p>
+
+        {% if emotion == "N/A" %}
+            <p class="result">Emotion Analysis: <em>Skipped</em></p>
+        {% else %}
+            <p class="result">Predicted Emotion: <strong>{{ emotion }}</strong></p>
+        {% endif %}
+
+        <button class="back-btn" onclick="window.location.href='/'">Back to Home</button>
+    </div>
+</body>
+</html>

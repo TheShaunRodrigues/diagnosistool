@@ -1,7 +1,7 @@
 # Install required libraries
 """!pip install pandas numpy scikit-learn flask cryptography transformers sqlite3"""
 
-
+import sqlite3
 import pandas as pd
 import numpy as np
 from sklearn.ensemble import RandomForestClassifier

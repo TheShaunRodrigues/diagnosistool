@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Emotion Analysis</title>
+    <style>
+        body { font-family: sans-serif; text-align: center; padding: 20px; }
+        h1 { color: #4CAF50; }
+        .container { width: 50%; margin: auto; padding: 20px; border: 1px solid #ddd; border-radius: 10px; }
+        textarea { width: 100%; height: 100px; margin-bottom: 20px; padding: 10px; }
+        .button { padding: 10px 20px; border: none; cursor: pointer; }
+        .submit { background: #4CAF50; color: white; }
+        .skip { background: gray; color: white; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Optional Emotion Analysis</h1>
+        <p>Enter text describing how you feel (optional):</p>
+        <form action="/emotion-analysis" method="POST">
+            <textarea name="text" placeholder="Describe your mood..."></textarea>
+            <input type="hidden" name="severity" value="{{ severity }}">
+            <button type="submit" class="button submit">Analyze Emotion</button>
+        </form>
+        <br>
+        <button class="button skip" onclick="window.location.href='/results?severity={{ severity }}&emotion=N/A'">Skip</button>
+    </div>
+</body>
+</html>

@@ -74,40 +74,46 @@
     <div id="result"></div>
 
     <script>
-        const form = document.getElementById('phq9-form');
-        const resultDiv = document.getElementById('result');
-
-        form.addEventListener('submit', async (event) => {
+        document.getElementById('phq9-form').addEventListener('submit', async (event) => {
             event.preventDefault();
-
+        
             const phq9Responses = [];
             for (let i = 1; i <= 9; i++) {
                 const inputId = `phq${i}`;
-                const inputValue = parseInt(document.getElementById(inputId).value);
-                phq9Responses.push(inputValue);
-            }
-
-            try {
-                const response = await fetch('/predict', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ phq9_responses: phq9Responses })
-                });
-
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
+                const inputValue = document.getElementById(inputId).value;
+                if (inputValue === "" || isNaN(inputValue)) {
+                    alert("Please answer all PHQ-9 questions.");
+                    return;
                 }
-
+                phq9Responses.push(parseInt(inputValue));
+            }
+        
+            const userId = "user123"; // Replace with actual user ID if needed
+        
+            try {
+                const response = await fetch('/process_assessment', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        user_id: userId,
+                        phq9_responses: phq9Responses
+                    })
+                });
+        
                 const data = await response.json();
-                resultDiv.textContent = `Predicted Depression Severity: ${data.predicted_severity}`;
-
+                if (data.redirect) {
+                    window.location.href = data.redirect;
+                } else {
+                    alert('Error processing assessment: ' + (data.error || "Unknown error"));
+                }
             } catch (error) {
-                resultDiv.textContent = `Error: ${error.message}`;
+                alert('Error: ' + error.message);
             }
         });
-    </script>
+        </script>
+        
+        
+        
 
 </body>
 </html>
