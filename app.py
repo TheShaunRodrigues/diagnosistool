@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify, render_template, redirect, url_for
 import joblib
-from test_case_2 import predict_depression_severity, analyze_emotion, save_assessment
+from testcasefinal import predict_depression_severity, analyze_emotion, save_assessment
 
 app = Flask(__name__)
 
