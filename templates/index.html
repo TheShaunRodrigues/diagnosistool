@@ -1,150 +1,204 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta name = "viewport" content="with = device-width, initial-scale=1.0">
-        <title>Mental Health Detection</title>
-        <link rel="stylesheet" href="static\css\style.css">
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.6.0/css/fontawesome.min.css">
-    </head>
-    <body>
-        <section class="header">
-            <nav>
-              <a href="index.html"> <img src="static\images\logo.png"></a>
-              <div class="nav-links" id="navLinks">
-                <i class="fa fa-times" onclick="hideMenu()" ></i>
-                <ul>
-                    <li><a href="/">Home  </a></li>
-                    <li><a href=""> about </a></li>
-                    <li><a href="/question" class="hero-btn">PHQ-9 Assessment</a></li>
-                    <li><a href=""> Anxiety </a></li>
-                </ul>
-              </div>
-              <i class="fa fa-bars" onclick="showMenu" ></i>
-            </nav>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mental Health Detection</title>
+    <link rel="stylesheet" href="static/css/style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.6.0/css/fontawesome.min.css">
+</head>
+<body>
+    <button class="toggle-btn" onclick="toggleSidebar()">&#9776;</button>
+    <div class="sidebar" id="sidebar">
+        <button class="close-btn" onclick="toggleSidebar()">&times;</button>
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/question">PHQ-9 Assessment</a></li>
+            <li><a href="/anxiety">Anxiety</a></li>
+            <li><a href="/about">About</a></li>
+        </ul>
+    </div>
+
+    <section class="header">
+        <nav>
+            <a href="index.html"><img src="static/images/Logo 3.png" alt="Logo"></a>
+        </nav>
         <div class="text-box">
-            <h1>Questionnaire</h1>
-            <p> Types of questionnaire detail, <br>fregregrggrfrr </p>
+            <h1>Questionnaire To Detect Depression</h1>
+            <p>Fill the form below.<br>Can Help to find early signs of Depression.</p>
             <a href="/question" class="hero-btn">Questionnaire form</a>
             <a href="/emotion-analysis" class="hero-btn">Analyze Emotions</a>
         </div>
-        </section>
+    </section>
 
-<!--------idk--------------------->
-<section class="about">
-    <h1> Tests for Mental Health</h1>
-    <p>qwertyuiuytrsdfghjjhgfdsxcvbn,xzxcvbfd.</p>
-
-    <div class="row">
-        <div class="about-col">
-            <h3>Depression</h3>
-            <p>PHQ-9: A screening tool for depression symptoms. </p>
-        </div>
-        <div class="about-col">
-            <h3>Anxiety</h3>
-            <p> GAD-7: A screening tool and symptom severity measure for anxiety disorders.</p>
-        </div>
-        <div class="about-col">
-            <h3>More</h3>
-            <p>I actually dont know </p>
-        </div>
-    </div>
-</section>
-
-<section class="why">
-    <h1>Project was Made By</h1>
-    <p>Shaun Rodrigues, Colin Pereira, Chris Ruzario</p>
-</section>
-
-<section class="provide">
-    <h1>What we Can provide help with</h1>
-    <p>weffevdehvjnewiuewcndwuicndeuvifemnvfiuevmnfeivnmfeivnrvirtnvirnvmrfilkvmfrjkvmnfrviurfnvuifrvnfriuvbnfruinufdjkvfdnbmkfevnefkdvnrekefvnerivnreiuvnrviurvnfreiuvnfevinvtrun</p>
-    <div class="provide-col">
-        <img src="static\images\therapy.jpeg">
-        <h3> therapy</h3>
-        <p> </p>
-    </div>
-    <div class="provide-col">
-        <img src="static\images\doctor.jpeg">
-        <h3> Doctors</h3>
-        <p> </p>
-    </div>
-    <div class="provide-col">
-        <img src="static\images\remedies.jpeg">
-        <h3> Remedies</h3>
-        <p> </p>
-    </div>
-</section>
-
-
-<!----------Testimonials---------->
-<sections class = "testimonials">
-    <h1>Reviews</h1>
-    <p></p>
-    <div class ="row">
-       <div class ="testimonials-col">
-            <img src="static\images\review1.jpeg">
-            <div>
-              <p>
-                What a great website to check your mental state truly loved it!!!!!
-              </p>  
-              <h3>Christopher Mathew</h3>
-              <i class="fa fa-star" ></i>
-              <i class="fa fa-star" ></i>
-              <i class="fa fa-star" ></i>
-              <i class="fa fa-star" ></i>
-              <i class="fa fa-star-o" ></i>
+    <section class="about">
+        <h1>Tests for Mental Health</h1>
+        <p>Different Types Of Tests We Provide.</p>
+        <div class="row">
+            <div class="about-col">
+                <h3>Depression</h3>
+                <p>PHQ-9: A screening tool for depression symptoms. </p>
             </div>
-       </div> 
-       <div class ="testimonials-col">
-        <img src="static\images\review3.jpeg">
-        <div>
-          <p>
-            Easy and user friendly website, will recommend to my friends as well
-          </p>  
-          <h3>Elanor Williams</h3>
-          <i class="fa fa-star" ></i>
-              <i class="fa fa-star" ></i>
-              <i class="fa fa-star" ></i>
-              <i class="fa fa-star" ></i>
-              <i class="fa fa-star-o" ></i>
+            <div class="about-col">
+                <h3>Anxiety</h3>
+                <p>GAD-7: A screening tool and symptom severity measure for anxiety disorders.</p>
+            </div>
+            <div class="about-col">
+                <h3>More....</h3>
+                <p>Upcoming more tests in the future.</p>
+            </div>
         </div>
-   </div> 
-    </div>
-</sections>
+    </section>
 
+    <section class="why">
+        <h1>Project was Made By</h1>
+        <p>Shaun Rodrigues, Colin Pereira, Chris Ruzario</p>
+    </section>
 
+    <section class="provide">
+        <h1>What We Can Provide Help With</h1>
+        <div class="row">
+            <div class="provide-col">
+                <img src="static/images/therapy.jpeg" alt="Therapy">
+                <h3>Therapy</h3>
+            </div>
+            <div class="provide-col">
+                <img src="static/images/doctor.jpeg" alt="Doctors">
+                <h3>Doctors</h3>
+            </div>
+            <div class="provide-col">
+                <img src="static/images/remedies.jpeg" alt="Remedies">
+                <h3>Remedies</h3>
+            </div>
+        </div>
+    </section>
 
-<section class="cta">
-    <h1>Contact US<br> Since 2025</h1>
+    <section class="testimonials">
+        <h1>Reviews</h1>
+        <div class="row">
+            <div class="testimonials-col">
+                <img src="static/images/review1.jpeg" alt="Review 1">
+                <div>
+                    <p>What a great website to check your mental state, truly loved it!</p>
+                    <h3>Christopher Mathew</h3>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star-o"></i>
+                </div>
+            </div>
+            <div class="testimonials-col">
+                <img src="static/images/review3.jpeg" alt="Review 3">
+                <div>
+                    <p>Easy and user-friendly website, will recommend to my friends as well.</p>
+                    <h3>Elanor Williams</h3>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star-o"></i>
+                </div>
+            </div>
+        </div>
+    </section>
 
-    <a href="" class="hero-btn">CONTACT US</a>
-</section>
+    <section class="cta">
+        <h1>Contact Us<br> Since 2025</h1>
+        <a href="#" class="hero-btn">CONTACT US</a>
+    </section>
 
+    <section class="footer">
+        <h4>About Us</h4>
+        <p>Learn more about our mental health initiatives.</p>
+        <div class="icons">
+            <i class="fa fa-facebook"></i>
+            <i class="fa fa-twitter"></i>
+            <i class="fa fa-instagram"></i>
+            <i class="fa fa-linkedin"></i>
+        </div>
+    </section>
 
-<section class="footer">
-    <h4>About Us</h4>
-    <p>qegbtrtrvtrgtrgvtrvvbfgvfdvcvfdvcfbvbvdx vfesfvfdvcdfvfgvfrbgbgfgcvfdvbgfrvgvbgf</p>
-    <div class="icons">
-        <i class="fa fa-facebook" ></i>
-        <i class="fa fa-twitter" ></i>
-        <i class="fa fa-instagram" ></i>
-        <i class="fa fa-linkedin" ></i>
-    </div>
-</section>
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById("sidebar");
+            if (sidebar.style.right === "0px") {
+                sidebar.style.right = "-220px";
+            } else {
+                sidebar.style.right = "0px";
+            }
+        }
+    </script>
 
+    <style>
+        body {
+            margin: 0;
+            overflow-x: hidden; /* Prevents horizontal scrolling */
+        }
 
-<!------JavaScript for Toggle Menu--------->
-<script>
-    var navLinks = document.getElementById("navLinks");
-    function showMenu(){
-        navlinks.style.right= "0";
+        .sidebar {
+            position: fixed;
+            right: -220px;
+            top: 0;
+            width: 200px;
+            height: 100%;
+            background: #A37A74;
+            padding: 20px;
+            transition: 0.3s;
+            z-index: 1000;
+        }
 
-    }
-    function hideMenu(){
-        navLinks.style.right = "-200px";
-    }
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+        }
 
-</script>
+        .sidebar ul li {
+            padding: 15px 0;
+        }
 
-    </body>
+        .sidebar ul li a {
+            color: white;
+            text-decoration: none;
+            display: block;
+        }
+
+        .sidebar ul li a:hover {
+            background: #E49273;
+            padding-left: 10px;
+        }
+
+        .toggle-btn {
+            position: fixed;
+            right: 10px;
+            top: 10px;
+            background: #A37A74;
+            color: white;
+            padding: 10px;
+            border: none;
+            cursor: pointer;
+            z-index: 1001;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .provide .row {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .provide-col {
+            text-align: center;
+        }
+    </style>
+</body>
 </html>

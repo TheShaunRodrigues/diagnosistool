@@ -5,7 +5,7 @@
 .header{
     min-height: 100vh;
     width: 100%;
-    background-image: linear-gradient(rgba(255, 255, 255, 0.7),rgba(108, 105, 105, 0.7)),url("images/first.png");
+    background-image: linear-gradient(rgba(103, 221, 250, 0.863),rgba(108, 100, 227, 0.7)),url("images/first.png");
     background-position: center;
     background-size: cover;
     position: relative;
@@ -34,7 +34,7 @@ nav img{
 }
 
 .nav-links ul li{
-    color: #fff;
+    color: #2B4570;
     text-decoration: none;
     font-size:13px;
 }
@@ -44,7 +44,7 @@ nav img{
 }
 .text-box{
     width: 90%;
-    color: #fff;
+    color: #2B4570;
     position: absolute;
     top: 50%;
     left: 50%;
@@ -57,13 +57,13 @@ nav img{
 .text-box p{
     margin: 10px 0 40px;
     font-size: 14px;
-    color: #fff;
+    color: #2B4570;
 }
 .hero-btn{
     display: inline-block;
     text-decoration: none;
-    color: #fff;
-    border: 1px solid #fff;
+    color: #2B4570;
+    border: 1px solid #7180AC;
     padding: 12px 34px;
     font-size: 13px;
     background:transparent;
@@ -72,8 +72,8 @@ nav img{
 }
 
 .hero-btn:hover{
-    border: 1px solid #f44336;
-    background: #f44336;
+    border: 1px solid #E49273;
+    background: #E49273;
     transition:1s;
 }
 nav .fa{
@@ -89,7 +89,7 @@ nav .fa{
     }
     .nav-links{
         position: absolute;
-        background: #f44336;
+        background: #A37A74;
         height: 100vh;
         width: 200px;
         top: 0;
@@ -100,7 +100,7 @@ nav .fa{
     }
     nav .fa{
         display: block;
-        color: #fff;
+        color: #7180AC;
         margin: 10px;
         font-size: 22px;
         cursor: pointer;
@@ -116,13 +116,15 @@ nav .fa{
     margin: auto;
     text-align: center;
     padding-top: 100px;
+    background:#fff;
 }
 h1{
+    color: #2B4570;
     font-size:36px;
     font-weight: 600;
 }
 p{
-    color: #777;
+    color: #2B4570;
     font-size:14px;
     font-weight: 300;
     line-height: 22px;
@@ -139,7 +141,7 @@ p{
 
 .about-col{
     flex-basis: 31%;
-    background: #fff3f3;
+    background: #A8D0DB;
     border-radius: 10px;
     margin-bottom: 55;
     padding: 20px 12px;
@@ -172,6 +174,7 @@ h3{
     margin: auto;
     text-align: center;
     padding-top: 50px;
+    background:#fff;
 }
 
 /*--------provide---------*/
@@ -180,6 +183,7 @@ h3{
     margin: auto;
     text-align: center;
     padding-top: 100px;
+    background:#67ddfadc;
 }
 
 .provide-col{
@@ -204,13 +208,14 @@ h3{
     margin: auto;
     padding-top: 100px;
     text-align: center;
+    background:#67ddfadc;
 }
 .testimonials-col{
     flex-basis: 44%;
     border-radius: 10px;
     margin-bottom: 5%;
     text-align: left;
-    background: #fff3f3;
+    background: #A8D0DB;
     padding: 25px;
     cursor: pointer;
     display: flex;
@@ -239,7 +244,7 @@ h3{
 .cta{
     margin:100px auto;
     width: 80%;
-    background-image: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url(images/in.png);
+    background-image: linear-gradient(rgba(168, 208, 219, 1), rgba(168, 208, 219, 1)), url(images/in.png);
     background-position: center;
     background-size: cover;
     border-radius: 10px;
@@ -247,7 +252,7 @@ h3{
     padding: 100px 0;
 }
 .cta h1{
-    color: #fff;
+    color: #2B4570;
     margin-bottom: 40px;
     padding:0;
 }
@@ -257,8 +262,10 @@ h3{
     width:100%;
     text-align: center;
     padding: 30px 0;
+    background:#67ddfadc;
 }
 .footer h4{
+    color: #2B4570;
     margin-bottom: 25px;
     margin-top: 20px;
     font-weight: 600;
