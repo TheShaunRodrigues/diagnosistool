@@ -1,27 +1,149 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Assessment Results</title>
     <style>
-        body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
-        h1 { color: #4CAF50; }
-        .container { width: 50%; margin: auto; padding: 20px; border: 1px solid #ddd; border-radius: 10px; }
-        .result { font-size: 20px; font-weight: bold; margin-top: 20px; }
-        .back-btn { margin-top: 20px; padding: 10px 20px; background: #4CAF50; color: white; border: none; cursor: pointer; }
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+            background-color: #f7f7f7;
+        }
+
+        h1 {
+            color: #4CAF50;
+        }
+
+        .container {
+            width: 60%;
+            margin: auto;
+            padding: 20px;
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .result {
+            font-size: 20px;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+
+        .meter-container {
+            width: 100%;
+            height: 30px;
+            background-color: #e0e0e0;
+            border-radius: 15px;
+            margin-top: 20px;
+            position: relative;
+        }
+
+        .meter {
+            height: 100%;
+            border-radius: 15px;
+            transition: width 0.5s ease;
+        }
+
+        .back-btn {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        .analysis-text {
+            margin-top: 30px;
+            font-size: 16px;
+            font-weight: normal;
+            padding: 15px;
+            border: 2px solid #4CAF50;
+            border-radius: 10px;
+            background-color: #f9f9f9;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Assessment Results</h1>
+        <h1>Depression Assessment Results</h1>
         <p class="result">Predicted Depression Severity: <strong>{{ severity }}</strong></p>
 
-        {% if emotion == "N/A" %}
-            <p class="result">Emotion Analysis: <em>Skipped</em></p>
-        {% else %}
+        {% if severity != "None" %}
+        <!-- Severity Meter -->
+        <div class="meter-container">
+            <div class="meter" id="severityMeter"></div>
+        </div>
+        {% endif %}
+
+        <!-- Emotion Analysis -->
+        {% if emotion != "N/A" %}
             <p class="result">Predicted Emotion: <strong>{{ emotion }}</strong></p>
+        {% endif %}
+
+        {% if severity != "None" %}
+        <!-- Symptoms and Challenges -->
+        <div class="problems-list">
+            <h3>Symptoms and Challenges Based on Depression Severity:</h3>
+            <ul>
+                {% if severity == "Mild" %}
+                    <li><strong>Occasional feelings of sadness</strong>: You may experience sadness or emotional lows from time to time.</li>
+                    <li><strong>Increased irritability or stress</strong>: You may feel frustrated or overwhelmed with everyday challenges.</li>
+                    <li><strong>Difficulty concentrating</strong>: Your ability to focus on tasks may be slightly impaired.</li>
+                    <li><strong>Sleep or appetite changes</strong>: Mild alterations in your sleep pattern or eating habits may occur.</li>
+                {% elif severity == "Moderate" %}
+                    <li><strong>Frequent feelings of hopelessness</strong>: You may feel like nothing is going to improve, and this can lead to negative thinking.</li>
+                    <li><strong>Loss of interest in daily activities</strong>: Things you once enjoyed may no longer hold your attention.</li>
+                    <li><strong>Fatigue</strong>: You may feel tired or drained, even after adequate rest.</li>
+                    <li><strong>Social withdrawal</strong>: You may avoid social activities and isolate yourself from others.</li>
+                    <li><strong>Disrupted sleep or appetite</strong>: Changes in your sleep cycle or eating patterns might become more noticeable.</li>
+                {% elif severity == "Severe" %}
+                    <li><strong>Constant feelings of sadness or despair</strong>: You might feel a deep sense of sadness or helplessness that doesn’t seem to go away.</li>
+                    <li><strong>Loss of interest in almost everything</strong>: Even the activities that once brought you joy might feel like a chore.</li>
+                    <li><strong>Difficulty functioning</strong>: Tasks at work or school may become overwhelming and difficult to manage.</li>
+                    <li><strong>Thoughts of self-harm or suicidal thoughts</strong>: You may experience disturbing thoughts about harming yourself or others. Please seek immediate help from a healthcare professional.</li>
+                {% endif %}
+            </ul>
+        </div>
+        
+        <!-- Additional Analysis Text -->
+        <div class="analysis-text">
+            <h3>Recommended Actions:</h3>
+            <p>
+                Based on your results, we recommend seeking support from a mental health professional. They can guide you through a treatment plan tailored to your specific needs. In addition, consider practicing self-care strategies such as:
+            </p>
+            <ul>
+                <li>Maintaining a balanced diet and regular exercise routine.</li>
+                <li>Engaging in relaxation techniques like meditation or mindfulness.</li>
+                <li>Talking to someone you trust, whether it's a friend, family member, or therapist.</li>
+                <li>Tracking your moods and symptoms to help identify patterns over time.</li>
+            </ul>
+        </div>
         {% endif %}
 
         <button class="back-btn" onclick="window.location.href='/'">Back to Home</button>
     </div>
+
+    <script>
+        // Map severity levels to meter widths (in percentage)
+        const severityLevels = {
+            "None": "0%",
+            "Mild": "25%",
+            "Moderate": "50%",
+            "Severe": "75%",
+            "Very Severe": "100%"
+        };
+
+        // Set the meter width based on the predicted severity
+        const severity = "{{ severity }}"; // Insert severity dynamically
+        const meterElement = document.getElementById("severityMeter");
+
+        if (severityLevels[severity]) {
+            meterElement.style.width = severityLevels[severity];
+        }
+    </script>
 </body>
 </html>
