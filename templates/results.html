@@ -45,6 +45,7 @@
             height: 100%;
             border-radius: 15px;
             transition: width 0.5s ease;
+            background-color: #4CAF50;
         }
 
         .back-btn {
@@ -54,17 +55,28 @@
             color: white;
             border: none;
             cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .problems-list, .reasoning-section {
+            text-align: left;
+            margin-top: 20px;
+            font-size: 16px;
+        }
+
+        .problems-list li, .reasoning-section li {
+            margin: 5px 0;
         }
 
         .analysis-text {
             margin-top: 30px;
             font-size: 16px;
             font-weight: normal;
-            padding: 15px;
-            border: 2px solid #4CAF50;
+            border: 1px solid #ddd;
+            padding: 10px;
             border-radius: 10px;
-            background-color: #f9f9f9;
         }
+
     </style>
 </head>
 <body>
@@ -72,20 +84,20 @@
         <h1>Depression Assessment Results</h1>
         <p class="result">Predicted Depression Severity: <strong>{{ severity }}</strong></p>
 
-        {% if severity != "None" %}
         <!-- Severity Meter -->
         <div class="meter-container">
             <div class="meter" id="severityMeter"></div>
         </div>
-        {% endif %}
 
         <!-- Emotion Analysis -->
-        {% if emotion != "N/A" %}
+        {% if emotion == "N/A" %}
+            <p class="result">Emotion Analysis: <em>Skipped</em></p>
+        {% else %}
             <p class="result">Predicted Emotion: <strong>{{ emotion }}</strong></p>
         {% endif %}
 
+        <!-- Problems List based on severity -->
         {% if severity != "None" %}
-        <!-- Symptoms and Challenges -->
         <div class="problems-list">
             <h3>Symptoms and Challenges Based on Depression Severity:</h3>
             <ul>
@@ -108,7 +120,22 @@
                 {% endif %}
             </ul>
         </div>
-        
+        {% endif %}
+
+        <!-- Explanation for Results -->
+        <div class="reasoning-section">
+            <h3>Why This Result Was Given:</h3>
+            <ul>
+                {% if responses %}
+                    {% for response in responses %}
+                        <li><strong>{{ response.question }}</strong>: {{ response.answer }} → <em>{{ response.explanation }}</em></li>
+                    {% endfor %}
+                {% else %}
+                    <li>No detailed responses are available for this assessment.</li>
+                {% endif %}
+            </ul>
+        </div>
+
         <!-- Additional Analysis Text -->
         <div class="analysis-text">
             <h3>Recommended Actions:</h3>
@@ -122,7 +149,6 @@
                 <li>Tracking your moods and symptoms to help identify patterns over time.</li>
             </ul>
         </div>
-        {% endif %}
 
         <button class="back-btn" onclick="window.location.href='/'">Back to Home</button>
     </div>
@@ -130,20 +156,22 @@
     <script>
         // Map severity levels to meter widths (in percentage)
         const severityLevels = {
-            "None": "0%",
-            "Mild": "25%",
-            "Moderate": "50%",
-            "Severe": "75%",
-            "Very Severe": "100%"
+            "None": { width: "0%", color: "#e0e0e0" }, // Grey (Neutral)
+            "Mild": { width: "25%", color: "#FFD700" }, // Yellow (Mild)
+            "Moderate": { width: "50%", color: "#FFA500" }, // Orange (Moderate)
+            "Severe": { width: "75%", color: "#FF4500" }, // Dark Orange (Severe)
+            "Very Severe": { width: "100%", color: "#D00000" } // Red (Very Severe)
         };
 
-        // Set the meter width based on the predicted severity
-        const severity = "{{ severity }}"; // Insert severity dynamically
+        // Set the meter width and color based on the predicted severity
+        const severity = "{{ severity }}";
         const meterElement = document.getElementById("severityMeter");
 
         if (severityLevels[severity]) {
-            meterElement.style.width = severityLevels[severity];
+            meterElement.style.width = severityLevels[severity].width;
+            meterElement.style.backgroundColor = severityLevels[severity].color;
         }
     </script>
+    
 </body>
 </html>

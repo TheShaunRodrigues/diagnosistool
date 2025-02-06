@@ -39,8 +39,11 @@
             cursor: pointer;
         }
 
-        #result {
+        #result, #summary, #feedback {
             margin-top: 20px;
+        }
+
+        #summary {
             font-weight: bold;
         }
     </style>
@@ -72,11 +75,13 @@
     </form>
 
     <div id="result"></div>
+    <div id="summary"></div>
+    <div id="feedback"></div>
 
     <script>
         document.getElementById('phq9-form').addEventListener('submit', async (event) => {
             event.preventDefault();
-        
+
             const phq9Responses = [];
             for (let i = 1; i <= 9; i++) {
                 const inputId = `phq${i}`;
@@ -87,9 +92,9 @@
                 }
                 phq9Responses.push(parseInt(inputValue));
             }
-        
+
             const userId = "user123"; // Replace with actual user ID if needed
-        
+
             try {
                 const response = await fetch('/process_assessment', {
                     method: 'POST',
@@ -99,21 +104,24 @@
                         phq9_responses: phq9Responses
                     })
                 });
-        
+
                 const data = await response.json();
                 if (data.redirect) {
                     window.location.href = data.redirect;
+                } else if (data.summary && data.feedback) {
+                    document.getElementById('summary').textContent = data.summary;
+                    document.getElementById('feedback').textContent = data.feedback;
                 } else {
                     alert('Error processing assessment: ' + (data.error || "Unknown error"));
+                    if (data.summary) {
+                        document.getElementById('summary').textContent = data.summary;
+                    }
                 }
             } catch (error) {
                 alert('Error: ' + error.message);
             }
         });
-        </script>
-        
-        
-        
+    </script>
 
 </body>
 </html>
