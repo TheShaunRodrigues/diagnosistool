@@ -350,7 +350,7 @@ WEIGHTS = {
 ICD10_COLUMNS = ['q1', 'q2', 'q3', 'q4', 'q5', 'q6', 'q7', 'q8', 'q9', 'q10',
                  'q11', 'q12', 'q13', 'q14', 'q16', 'q46', 'q47']
 
-
+"""
 ################################################################################
 #         MAIN FUNCTION (Now for Prediction from External Input)              #
 ################################################################################
@@ -361,7 +361,7 @@ _, _, FEATURE_COLUMNS = prepare_features_and_target(pd.DataFrame({'phq9_severity
 
 
 def get_diagnosis_from_input(user_input_json):
-    """
+    ""#
     Takes user input data (e.g., from a JSONified HTML form), preprocesses it,
     predicts mental health severity, and returns the prediction.
 
@@ -371,7 +371,7 @@ def get_diagnosis_from_input(user_input_json):
 
     Returns:
         str: Predicted severity label (e.g., "Minimal", "Mild", etc.).
-    """
+    ""#
     try:
         # 1. Convert JSON input to DataFrame (assuming input is already a dict in Python after JSON parsing)
         input_data_point_df = pd.DataFrame([user_input_json])
@@ -415,7 +415,7 @@ if __name__ == '__main__':
     print(f"\n--- Prediction Test ---")
     print(f"Input JSON: {test_input_json}")
     print(f"Predicted Diagnosis: {predicted_diagnosis}")
-
+"""
 
 ################################################################################
 #                             MAIN FUNCTION (Example Pipeline)                 #
