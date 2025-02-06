@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify, render_template, redirect, url_for, session
 import joblib
+#from ml_functions import get_diagnosis_from_input, load_model_and_artifacts, prepare_features_and_target # Import ML functions
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'  # VERY IMPORTANT: CHANGE THIS!
