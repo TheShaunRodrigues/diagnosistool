@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>ICD-10 Assessment</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            margin: 20px;
+        }
+        h1 {
+            text-align: center;
+        }
+        form {
+            width: 50%;
+            margin: 0 auto;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>ICD-10 Assessment</h1>
+    <h2>On a scale of 0 to 3, how often have you experienced the following symptoms?</h2>
+    <form id="icd10-form">
+        <label for="q1">Are you feeling depressed?</label>
+        <input type="number" id="q1" min="0" max="3"><br>
+        <label for="q2">Are you feeling hopeless?</label>
+        <input type="number" id="q2" min="0" max="3"><br>
+        <label for="q3">Do you feel like you are not interested in anything right now?</label>
+        <input type="number" id="q3" min="0" max="3"><br>
+        <label for="q4">Do you have less pleasure in doing things you usually enjoy?</label>
+        <input type="number" id="q4" min="0" max="3"><br>
+        <label for="q5">Do you currently have considerably less energy?</label>
+        <input type="number" id="q5" min="0" max="3"><br>
+        <label for="q6">Are your everyday tasks making you very tired currently?</label>
+        <input type="number" id="q6" min="0" max="3"><br>
+        <label for="q11">Is it hard for you to make decisions currently?</label>
+        <input type="number" id="q11" min="0" max="3"><br>
+        <label for="q12">Is it hard for you to concentrate currently?</label>
+        <input type="number" id="q12" min="0" max="3"><br>
+        <label for="q7">Is your self-confidence clearly lower than usual?</label>
+        <input type="number" id="q7" min="0" max="3"><br>
+        <label for="q8">Are you feeling up to your tasks?</label>
+        <input type="number" id="q8" min="0" max="3"><br>
+        <label for="q9">Are you blaming yourself currently?</label>
+        <input type="number" id="q9" min="0" max="3"><br>
+        <label for="q10">Do you think you are worth less than others right now?</label>
+        <input type="number" id="q10" min="0" max="3"><br>
+        <label for="q46">Are you thinking that you will be doing well in the future?</label>
+        <input type="number" id="q46" min="0" max="3"><br>
+        <label for="q47">Are you looking hopefully into the future?</label>
+        <input type="number" id="q47" min="0" max="3"><br>
+        <label for="q16">Are you thinking about death more often than usual?</label>
+        <input type="number" id="q16" min="0" max="3"><br>
+        <label for="q13">Did you sleep badly last night?</label>
+        <input type="number" id="q13" min="0" max="3"><br>
+        <label for="q14">Do you have less or no appetite today?</label>
+        <input type="number" id="q14" min="0" max="3"><br>
+        <button type="submit">Submit</button>
+    </form>
+
+    <script>
+        document.getElementById('icd10-form').addEventListener('submit', async (event) => {
+            event.preventDefault();
+            
+            const icd10Responses = {};
+            const fields = ["q1", "q2", "q3", "q4", "q5", "q6", "q11", "q12", "q7", "q8", "q9", "q10", "q46", "q47", "q16", "q13", "q14"];
+            for (let field of fields) {
+                const inputValue = document.getElementById(field).value;
+                if (inputValue === "" || isNaN(inputValue)) {
+                    alert("Please answer all ICD-10 questions.");
+                    return;
+                }
+                icd10Responses[field] = parseInt(inputValue);
+            }
+
+            try {
+                const response = await fetch('/process_icd10_assessment', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(icd10Responses)
+                });
+
+                const data = await response.json();
+                if (data.redirect) {
+                    window.location.href = data.redirect;
+                } else {
+                    alert('Error processing assessment: ' + (data.error || "Unknown error"));
+                }
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        });
+    </script>
+</body>
+</html>
