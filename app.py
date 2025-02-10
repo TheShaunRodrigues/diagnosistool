@@ -1,5 +1,7 @@
 from flask import Flask, request, jsonify, render_template, redirect, url_for, session
 import joblib
+import pandas as pd
+import numpy as np
 from ml_functions import load_model_and_artifacts, prepare_features_and_target, predict_severity # Import ML functions
 
 app = Flask(__name__)
@@ -186,82 +188,155 @@ def generate_responses(phq9_responses, icd10_responses):
 
     icd10_explanations = [
         [
-            "You don’t seem to experience depression frequently.",
-            "You occasionally feel depressed, which is normal.",
-            "Frequent depressive feelings should be monitored.",
-            "Persistent depression is a serious concern. Seeking professional help is advised."
+            "No signs of depression; mood appears stable.",
+            "Mild feelings of sadness or low mood.",
+            "Moderate depression symptoms, affecting emotions and motivation.",
+            "Persistent feelings of sadness, possibly indicating a major depressive episode."
         ],
         [
-            "You maintain a hopeful outlook, which is good.",
-            "You occasionally feel hopeless, but this may be situational.",
-            "Frequent hopelessness can be concerning. Talk to someone you trust.",
-            "Strong feelings of hopelessness should not be ignored. Seek professional support."
+            "No feelings of hopelessness; generally optimistic.",
+            "Occasional feelings of doubt about the future.",
+            "Moderate hopelessness, which may increase depressive thoughts.",
+            "Strong hopelessness, a key symptom of severe depression."
         ],
         [
-            "You maintain interest in activities.",
-            "Mild loss of interest can happen due to stress or fatigue.",
-            "A moderate loss of interest might indicate emotional distress.",
-            "Severe disinterest could be a symptom of depression. Consider professional help."
+            "Normal levels of interest in activities.",
+            "Slightly reduced interest in hobbies or work.",
+            "Moderate disinterest in previously enjoyable activities.",
+            "Complete lack of interest in activities, a sign of anhedonia."
         ],
         [
-            "You still find pleasure in activities.",
-            "Occasionally not enjoying things is normal.",
-            "A persistent loss of enjoyment might be a concern.",
-            "Completely losing interest in once-loved activities can indicate depression."
+            "No change in pleasure from usual activities.",
+            "Occasionally experiencing less joy in activities.",
+            "Noticeably reduced pleasure in daily activities.",
+            "Loss of pleasure in almost everything, commonly seen in depression."
         ],
         [
-            "Your energy levels are stable.",
-            "Mild energy loss can happen due to stress.",
-            "Moderate fatigue may suggest emotional exhaustion.",
-            "Constant exhaustion should be addressed with professional help."
+            "No noticeable changes in energy levels.",
+            "Feeling somewhat drained or tired.",
+            "Frequent exhaustion, making tasks difficult.",
+            "Persistent low energy, making daily activities nearly impossible."
         ],
         [
-            "You handle daily tasks well.",
-            "Occasional tiredness is normal.",
-            "Frequent tiredness might indicate deeper issues.",
-            "Severe exhaustion requires further evaluation."
+            "Normal energy levels for daily tasks.",
+            "Occasional tiredness from daily responsibilities.",
+            "Daily tasks feel significantly exhausting.",
+            "Overwhelming fatigue, making even simple tasks challenging."
         ],
         [
-            "You make decisions confidently.",
-            "Occasional indecisiveness is normal.",
-            "Frequent trouble making decisions may indicate distress.",
-            "Severe difficulty in decision-making is concerning."
+            "No difficulty making decisions.",
+            "Some trouble making choices.",
+            "Frequent indecisiveness, making decisions harder.",
+            "Severe decision-making difficulties, common in depression."
         ],
         [
-            "You focus well.",
-            "Occasional concentration issues happen to everyone.",
-            "Persistent focus problems should be addressed.",
-            "Severe difficulty concentrating might need professional intervention."
+            "No concentration issues.",
+            "Occasional trouble focusing.",
+            "Frequent difficulty concentrating.",
+            "Severe concentration problems affecting work or study."
         ],
         [
-            "You have a stable self-esteem.",
-            "Occasional self-doubt is normal.",
-            "Frequent low self-esteem should be monitored.",
-            "Severe confidence issues may require therapy."
+            "Self-confidence is stable.",
+            "Occasionally feeling unsure of yourself.",
+            "Moderately low self-confidence, impacting social interactions.",
+            "Significantly low self-esteem, often leading to isolation."
         ],
         [
-            "You feel capable of handling tasks.",
-            "Occasional self-doubt is fine.",
-            "Frequent difficulty completing tasks may be a concern.",
-            "Severe lack of motivation needs professional evaluation."
+            "Fully capable of handling responsibilities.",
+            "Mild lack of motivation for daily tasks.",
+            "Struggling to complete responsibilities.",
+            "Severe lack of motivation, making tasks overwhelming."
+        ],
+        [
+            "No feelings of self-blame.",
+            "Occasionally feeling guilty about small things.",
+            "Frequent self-blame, possibly leading to distress.",
+            "Strong, persistent self-blame, often seen in depression."
+        ],
+        [
+            "No feelings of worthlessness.",
+            "Occasional self-doubt and comparisons to others.",
+            "Frequent feelings of worthlessness, lowering self-esteem.",
+            "Persistent self-worth concerns, a serious sign of depression."
+        ],
+        [
+            "Positive outlook on the future.",
+            "Some uncertainty but remaining hopeful.",
+            "Pessimism about future prospects.",
+            "Strong belief that things will not improve, a concerning symptom."
+        ],
+        [
+            "Optimistic about future events.",
+            "Occasionally worried about the future.",
+            "Little hope about what lies ahead.",
+            "Complete loss of hope, which is common in severe depression."
+        ],
+        [
+            "No thoughts of death.",
+            "Occasional thoughts about mortality, possibly stress-related.",
+            "Frequent thoughts about death, which is concerning.",
+            "Strong suicidal thoughts—seek immediate professional help."
+        ],
+        [
+            "Normal sleep patterns.",
+            "Occasional trouble sleeping.",
+            "Frequent sleep disturbances, possibly insomnia.",
+            "Severe insomnia or hypersomnia, strongly linked to depression."
+        ],
+        [
+            "Normal appetite levels.",
+            "Mild changes in appetite.",
+            "Frequent appetite loss, leading to energy depletion.",
+            "Severe appetite changes, potentially leading to malnutrition."
         ]
     ]
 
+
+ # Pad responses to match question count
+    phq9_responses = phq9_responses + [0] * (len(phq9_questions) - len(phq9_responses))
+    icd10_responses = icd10_responses + [0] * (len(icd10_questions) - len(icd10_responses))
+
+    # Clamp scores to valid range (0–3)
+    phq9_responses = [min(max(score, 0), 3) for score in phq9_responses]
+    icd10_responses = [min(max(score, 0), 3) for score in icd10_responses]
+
     responses = []
-    
+
+    # Debugging: Print inputs
+    print("PHQ-9 Responses:", phq9_responses)
+    print("ICD-10 Responses:", icd10_responses)
+
     # Process PHQ-9 Responses
     for i, question in enumerate(phq9_questions):
-        score = phq9_responses[i] if i < len(phq9_responses) else 0
-        explanation = phq9_explanations[i][score]
-        responses.append({"question": question, "answer": str(score), "explanation": explanation})
+        try:
+            score = phq9_responses[i]
+            explanation = phq9_explanations[i][score]
+            responses.append({"question": question, "answer": str(score), "explanation": explanation})
+        except IndexError as e:
+            print(f"Error processing PHQ-9 question {i}: {e}")
+            print(f"Score: {score}, Explanations Available: {len(phq9_explanations[i])}")
 
     # Process ICD-10 Responses
     for i, question in enumerate(icd10_questions):
-        score = icd10_responses[i] if i < len(icd10_responses) else 0
-        explanation = icd10_explanations[i][score]
-        responses.append({"question": question, "answer": str(score), "explanation": explanation})
+        try:
+            score = icd10_responses[i]
+            explanation = icd10_explanations[i][score]
+            responses.append({"question": question, "answer": str(score), "explanation": explanation})
+        except IndexError as e:
+            print(f"Error processing ICD-10 question {i}: {e}")
+            print(f"Score: {score}, Explanations Available: {len(icd10_explanations[i])}")
 
     return responses
+
+
+# Test the function
+if __name__ == "__main__":
+    phq9_responses = [0, 1, 2, 3, 0, 1, 2, 3, 2]  # Example PHQ-9 scores
+    icd10_responses = [0, 1, 2, 3, 0, 1, 2, 3, 2, 0, 1, 2, 3, 2, 1, 2, 3]  # Example ICD-10 scores
+
+    responses = generate_responses(phq9_responses, icd10_responses)
+    for response in responses:
+        print(response)
 
 
 
@@ -296,37 +371,45 @@ def emotion_analysis_page():
 
 @app.route('/results')
 def results_page():
-    severity = request.args.get('severity', 'N/A')  # Get severity from URL
-    emotion = request.args.get('emotion', 'N/A')  # Get emotion from URL
+    severity = session.get('severity', 'N/A')
+    emotion = request.args.get('emotion', 'N/A')  # Get emotion as before
     summary = session.get('summary', '')
     feedback = session.get('feedback', '')
-    responses = session.get('responses', [])  # Get responses from session
+    responses = session.get('responses', [])  # Retrieve the responses!
 
-    session.pop('summary', None)  # Clear from session
+    # Clear from session (important to prevent data persistence across sessions)
+    session.pop('severity', None)
+    session.pop('summary', None)
     session.pop('feedback', None)
-    session.pop('responses', None)
+    session.pop('responses', None)  # Clear responses too
 
-    return render_template('results.html', severity=severity, emotion=emotion, summary=summary, feedback=feedback, responses=responses)  # Pass all data to template
+    return render_template('results.html', severity=severity, emotion=emotion, summary=summary, feedback=feedback, responses=responses)
+
 
 @app.route('/process_icd10_assessment', methods=['POST'])
 def process_icd10_assessment():
     try:
         data = request.get_json()
         icd10_responses = list(data.values())
-
-        # Retrieve stored PHQ-9 responses
         phq9_responses = session.get('phq9_responses')
 
         if not phq9_responses:
             return jsonify({'error': 'Missing PHQ-9 responses from session'}), 400
 
-        # Call the updated prediction function
         severity = predict_depression_severity(phq9_responses, icd10_responses)
+        summary, feedback = generate_summary_and_feedback(phq9_responses, icd10_responses)
+        responses = generate_responses(phq9_responses, icd10_responses)
+
+        session['severity'] = severity
+        session['summary'] = summary
+        session['feedback'] = feedback
+        session['responses'] = responses
 
         return jsonify({'redirect': url_for('results_page', severity=severity)})
 
     except Exception as e:
-        return jsonify({'error': str(e)}), 500
+        print(f"Error in /process_icd10_assessment: {e}") # VERY IMPORTANT: Check your console for this!
+        return jsonify({'error': str(e)}), 500  # Return JSON error
 
 
 
@@ -340,13 +423,13 @@ def process_assessment():
         if not user_id or not phq9_responses:
             return jsonify({'error': 'Missing user_id or PHQ-9 responses'}), 400
 
-        # Store PHQ-9 responses in session for later use
         session['phq9_responses'] = phq9_responses
 
-        return jsonify({'redirect': url_for('icd10_page')})  # Redirect to ICD-10 page
+        return jsonify({'redirect': url_for('icd10_page')})
 
     except Exception as e:
-        return jsonify({'error': str(e)}), 500
+        print(f"Error in /process_assessment: {e}")  # VERY IMPORTANT: Check your console for this!
+        return jsonify({'error': str(e)}), 500  # Return JSON error
 
 from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
 import pandas as pd

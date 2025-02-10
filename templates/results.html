@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Assessment Results</title>
+    <title>Depression Assessment Results</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -45,7 +45,6 @@
             height: 100%;
             border-radius: 15px;
             transition: width 0.5s ease;
-            background-color: #4CAF50;
         }
 
         .back-btn {
@@ -75,8 +74,13 @@
             border: 1px solid #ddd;
             padding: 10px;
             border-radius: 10px;
+            background-color: #f9f9f9;
         }
 
+        ul {
+            list-style-type: disc;
+            margin-left: 20px;
+        }
     </style>
 </head>
 <body>
@@ -84,64 +88,75 @@
         <h1>Depression Assessment Results</h1>
         <p class="result">Predicted Depression Severity: <strong>{{ severity }}</strong></p>
 
-        <!-- Severity Meter -->
         <div class="meter-container">
             <div class="meter" id="severityMeter"></div>
         </div>
 
-        <!-- Emotion Analysis -->
-        {% if emotion == "N/A" %}
-            <p class="result">Emotion Analysis: <em>Skipped</em></p>
-        {% else %}
-            <p class="result">Predicted Emotion: <strong>{{ emotion }}</strong></p>
-        {% endif %}
+        <p class="result">Emotion Analysis: 
+            {% if emotion == "N/A" %}
+                <em>Skipped</em>
+            {% else %}
+                <strong>{{ emotion }}</strong>
+            {% endif %}
+        </p>
 
-        <!-- Problems List based on severity -->
         {% if severity != "None" %}
         <div class="problems-list">
             <h3>Symptoms and Challenges Based on Depression Severity:</h3>
             <ul>
                 {% if severity == "Mild" %}
-                    <li><strong>Occasional feelings of sadness</strong>: You may experience sadness or emotional lows from time to time.</li>
-                    <li><strong>Increased irritability or stress</strong>: You may feel frustrated or overwhelmed with everyday challenges.</li>
-                    <li><strong>Difficulty concentrating</strong>: Your ability to focus on tasks may be slightly impaired.</li>
-                    <li><strong>Sleep or appetite changes</strong>: Mild alterations in your sleep pattern or eating habits may occur.</li>
+                    <li>Occasional feelings of sadness or emotional lows.</li>
+                    <li>Increased irritability or stress.</li>
+                    <li>Difficulty concentrating on daily tasks.</li>
+                    <li>Minor changes in sleep or appetite.</li>
                 {% elif severity == "Moderate" %}
-                    <li><strong>Frequent feelings of hopelessness</strong>: You may feel like nothing is going to improve, and this can lead to negative thinking.</li>
-                    <li><strong>Loss of interest in daily activities</strong>: Things you once enjoyed may no longer hold your attention.</li>
-                    <li><strong>Fatigue</strong>: You may feel tired or drained, even after adequate rest.</li>
-                    <li><strong>Social withdrawal</strong>: You may avoid social activities and isolate yourself from others.</li>
-                    <li><strong>Disrupted sleep or appetite</strong>: Changes in your sleep cycle or eating patterns might become more noticeable.</li>
+                    <li>Frequent feelings of hopelessness or negative thinking.</li>
+                    <li>Loss of interest in daily activities.</li>
+                    <li>Fatigue and reduced energy levels.</li>
+                    <li>Social withdrawal and disrupted sleep or appetite.</li>
                 {% elif severity == "Severe" %}
-                    <li><strong>Constant feelings of sadness or despair</strong>: You might feel a deep sense of sadness or helplessness that doesn’t seem to go away.</li>
-                    <li><strong>Loss of interest in almost everything</strong>: Even the activities that once brought you joy might feel like a chore.</li>
-                    <li><strong>Difficulty functioning</strong>: Tasks at work or school may become overwhelming and difficult to manage.</li>
-                    <li><strong>Thoughts of self-harm or suicidal thoughts</strong>: You may experience disturbing thoughts about harming yourself or others. Please seek immediate help from a healthcare professional.</li>
+                    <li>Constant feelings of sadness or despair.</li>
+                    <li>Loss of interest in almost everything, even enjoyable activities.</li>
+                    <li>Difficulty functioning in work or daily tasks.</li>
+                    <li>Thoughts of self-harm or suicide. Seek immediate professional help.</li>
                 {% endif %}
             </ul>
         </div>
         {% endif %}
 
-        <!-- Explanation for Results -->
         <div class="reasoning-section">
             <h3>Why This Result Was Given:</h3>
+            <h2>Responses:</h2>
+{% if responses %}
+    <ul>
+        {% for response in responses %}
+            <li>
+                <strong>{{ response.question }}</strong><br>
+                Answer: {{ response.answer }}<br>
+                Explanation: {{ response.explanation }}
+            </li>
+        {% endfor %}
+    </ul>
+{% endif %}
+            <h3></h3>
+            
+            <h4></h4>
             <ul>
-                {% if responses %}
-                    {% for response in responses %}
-                        <li><strong>{{ response.question }}</strong>: {{ response.answer }} → <em>{{ response.explanation }}</em></li>
-                    {% endfor %}
-                {% else %}
-                    <li>No detailed responses are available for this assessment.</li>
-                {% endif %}
+                {% for response in responses.phq9 %}
+                    <li><strong>{{ response.question }}</strong>: {{ response.answer }} → <em>{{ response.explanation }}</em></li>
+                {% endfor %}
+            </ul>
+            <h4></h4>
+            <ul>
+                {% for response in responses.icd10 %}
+                    <li><strong>{{ response.question }}</strong>: {{ response.answer }} → <em>{{ response.explanation }}</em></li>
+                {% endfor %}
             </ul>
         </div>
 
-        <!-- Additional Analysis Text -->
         <div class="analysis-text">
             <h3>Recommended Actions:</h3>
-            <p>
-                Based on your results, we recommend seeking support from a mental health professional. They can guide you through a treatment plan tailored to your specific needs. In addition, consider practicing self-care strategies such as:
-            </p>
+            <p>Based on your results, we recommend seeking support from a mental health professional. They can guide you through a treatment plan tailored to your specific needs. Additionally, consider practicing self-care strategies such as:</p>
             <ul>
                 <li>Maintaining a balanced diet and regular exercise routine.</li>
                 <li>Engaging in relaxation techniques like meditation or mindfulness.</li>
@@ -154,17 +169,15 @@
     </div>
 
     <script>
-        // Map severity levels to meter widths (in percentage)
         const severityLevels = {
-            "None": { width: "0%", color: "#e0e0e0" }, // Grey (Neutral)
-            "Mild": { width: "25%", color: "#FFD700" }, // Yellow (Mild)
-            "Moderate": { width: "50%", color: "#FFA500" }, // Orange (Moderate)
-            "Severe": { width: "75%", color: "#FF4500" }, // Dark Orange (Severe)
-            "Very Severe": { width: "100%", color: "#D00000" } // Red (Very Severe)
+            "None": { width: "0%", color: "#e0e0e0" },
+            "Mild": { width: "25%", color: "#FFD700" },
+            "Moderate": { width: "50%", color: "#FFA500" },
+            "Severe": { width: "75%", color: "#FF4500" },
+            "Very Severe": { width: "100%", color: "#D00000" }
         };
 
-        // Set the meter width and color based on the predicted severity
-        const severity = "{{ severity }}";
+        const severity = "{{ severity }}"; // Replace with backend-rendered severity value
         const meterElement = document.getElementById("severityMeter");
 
         if (severityLevels[severity]) {
@@ -172,6 +185,5 @@
             meterElement.style.backgroundColor = severityLevels[severity].color;
         }
     </script>
-    
 </body>
 </html>
