@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>User Information</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            margin: 20px;
+        }
+        h1 {
+            text-align: center;
+        }
+        form {
+            width: 50%;
+            margin: 0 auto;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>User Information</h1>
+    <form id="user-info-form">
+        <label for="age">Age:</label>
+        <input type="number" id="age" min="1" max="120" required><br>
+        
+        <label for="sex">Sex:</label>
+        <select id="sex">
+            <option value="0">Male</option>
+            <option value="1">Female</option>
+        </select><br>
+        
+        <label for="happiness_score">Happiness Score:</label>
+        <input type="range" id="happiness_score" min="0" max="4" step="1" value="2" oninput="updateHappinessLabel(this.value)">
+        <p id="happiness_label">Neutral</p>
+        
+        <button type="submit">Next</button>
+    </form>
+
+    <script>
+        function updateHappinessLabel(value) {
+            const labels = ["Very Unhappy", "Unhappy", "Neutral", "Happy", "Very Happy"];
+            document.getElementById('happiness_label').textContent = labels[value];
+        }
+                
+        document.getElementById('user-info-form').addEventListener('submit', async (event) => {
+            event.preventDefault();
+            
+            const age = document.getElementById('age').value;
+            const sex = document.getElementById('sex').value;
+            const happinessScore = document.getElementById('happiness_score').value;
+            
+            // Get current time data
+            const now = new Date();
+            const hourOfDay = now.getHours();
+            const startTimestamp = Math.floor(now.getTime() / 1000); // Unix timestamp
+            
+            // Determine period of the day
+            let periodName = "morning";
+            if (hourOfDay >= 12 && hourOfDay < 17) {
+                periodName = "afternoon";
+            } else if (hourOfDay >= 17 && hourOfDay < 21) {
+                periodName = "evening";
+            } else if (hourOfDay >= 21 || hourOfDay < 6) {
+                periodName = "night";
+            }
+        
+            try {
+                const response = await fetch('/store_user_info', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        age: parseInt(age),
+                        sex: parseInt(sex),
+                        happiness_score: parseInt(happinessScore),
+                        hour_of_day: hourOfDay,
+                        start_timestamp: startTimestamp,
+                        period_name: periodName
+                    })
+                });
+        
+                const data = await response.json();
+                if (data.redirect) {
+                    window.location.href = "/question"; // Redirect to PHQ-9 form
+                } else {
+                    alert('Error: ' + (data.error || "Unknown error"));
+                }
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        });
+        
+    </script>
+</body>
+</html>

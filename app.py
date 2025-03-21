@@ -21,7 +21,7 @@ def predict_depression_severity(phq9_responses, icd10_responses):
     # Calculate missing feature values
     age = 25  # Default age if not collected
     sex = 0   # Default sex (0: Male, 1: Female, if applicable)
-    happiness_score = 5  # Neutral score (adjust if needed)
+    happiness_score = 2  # Neutral score (adjust if needed)
     hour_of_day = 12  # Assume midday response time
     period_name = 1  # Assume "morning" period
     phq_day = 0  # Default value for missing data
@@ -353,6 +353,10 @@ def question_page():
 def icd10_page():
     return render_template('icd10.html')
 
+@app.route('/user_info')
+def user_info_page():
+    return render_template('user_info.html')
+
 @app.route('/emotion-analysis', methods=['GET', 'POST'])
 def emotion_analysis_page():
     severity = request.args.get('severity', 'N/A')  # Get severity from the URL
@@ -430,6 +434,25 @@ def process_assessment():
     except Exception as e:
         print(f"Error in /process_assessment: {e}")  # VERY IMPORTANT: Check your console for this!
         return jsonify({'error': str(e)}), 500  # Return JSON error
+    
+@app.route('/store_user_info', methods=['POST'])
+def store_user_info():
+    """Stores user information in session before PHQ-9 assessment."""
+    try:
+        data = request.get_json()
+        
+        # Store data in session
+        session['age'] = data.get('age', 25)  
+        session['sex'] = data.get('sex', 0)  
+        session['happiness_score'] = data.get('happiness_score', 2)
+        session['hour_of_day'] = data.get('hour_of_day', 12)
+        session['start_timestamp'] = data.get('start_timestamp', 1678900000)
+        session['period_name'] = data.get('period_name', 'morning')
+
+        return jsonify({'redirect': url_for('question_page')})  
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
 import pandas as pd
