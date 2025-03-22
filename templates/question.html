@@ -12,22 +12,38 @@
             text-align: center;
         }
 
-        form {
+        .container {
             width: 50%;
             margin: 0 auto;
+            text-align: center;
         }
 
-        label {
-            display: block;
-            margin-bottom: 5px;
-        }
-
-        input[type="number"] {
+        .progress {
             width: 100%;
-            padding: 10px;
-            margin-bottom: 15px;
-            border: 1px solid #ccc;
-            border-radius: 3px;
+            height: 10px;
+            background: #ccc;
+            border-radius: 5px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0;
+            background: #4CAF50;
+            transition: width 0.3s;
+        }
+
+        .question-container {
+            display: none;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            margin: 15px 0;
         }
 
         button {
@@ -37,60 +53,123 @@
             border: none;
             border-radius: 3px;
             cursor: pointer;
-        }
-
-        #result, #summary, #feedback {
-            margin-top: 20px;
-        }
-
-        #summary {
-            font-weight: bold;
+            margin: 10px;
         }
     </style>
 </head>
 <body>
 
-    <h1>PHQ-9 Assessment</h1>
-    <h2> On a scale of 0 to 3, how often have you been bothered by any of the following problems:</h2>
-    <form id="phq9-form">
-        <label for="phq1">Over the last two weeks, how often have you had little interest or pleasure in doing things?  </label>
-        <input type="number" id="phq1" min="0" max="3"><br><br>
-        <label for="phq2">Over the last two weeks, how often have you felt down, depressed, or hopeless?  </label>
-        <input type="number" id="phq2" min="0" max="3"><br><br>
-        <label for="phq3">Over the last two weeks, how often have you had trouble falling or staying asleep, or sleeping too much?  </label>
-        <input type="number" id="phq3" min="0" max="3"><br><br>
-        <label for="phq4">Over the last two weeks, how often have you felt tired or having little energy  </label>
-        <input type="number" id="phq4" min="0" max="3"><br><br>
-        <label for="phq5">Over the last two weeks, how often have you had poor appetite or overeating?  </label>
-        <input type="number" id="phq5" min="0" max="3"><br><br>
-        <label for="phq6">Over the last two weeks, how often have you felt bad about yourself—or that you are a failure or have let yourself or your family down?  </label>
-        <input type="number" id="phq6" min="0" max="3"><br><br>
-        <label for="phq7">Over the last two weeks, how often have you had trouble concentrating on things, such as reading or watching TV?  </label>
-        <input type="number" id="phq7" min="0" max="3"><br><br>
-        <label for="phq8">Over the last two weeks, how often have you been moving or speaking so slowly that other people could have noticed? Or the opposite—being so fidgety or restless that you have been moving around a lot more than usual?  </label>
-        <input type="number" id="phq8" min="0" max="3"><br><br>
-        <label for="phq9">Over the last two weeks, how often have you had thoughts that you would be better off dead or of hurting yourself in some way?  </label>
-        <input type="number" id="phq9" min="0" max="3"><br><br>
-        <button type="submit">Submit</button>
-    </form>
-
-    <div id="result"></div>
-    <div id="summary"></div>
-    <div id="feedback"></div>
+    <div class="container">
+        <h1>PHQ-9 Assessment</h1>
+        <div class="progress">
+            <div class="progress-bar" id="progress-bar"></div>
+        </div>
+        
+        <form id="phq9-form">
+            <div class="question-container" id="question-container">
+                <label id="question-text"></label>
+                <div class="options" id="options-container"></div>
+                <button type="button" id="prev-btn" style="display: none;">Back</button>
+                <button type="button" id="next-btn">Next</button>
+            </div>
+            <button type="submit" id="submit-btn" style="display: none;">Submit</button>
+        </form>
+    </div>
 
     <script>
-        document.getElementById('phq9-form').addEventListener('submit', async (event) => {
+        const questions = [
+            "Over the last two weeks, how often have you had little interest or pleasure in doing things?",
+            "Over the last two weeks, how often have you felt down, depressed, or hopeless?",
+            "Over the last two weeks, how often have you had trouble falling or staying asleep, or sleeping too much?",
+            "Over the last two weeks, how often have you felt tired or had little energy?",
+            "Over the last two weeks, how often have you had poor appetite or overeating?",
+            "Over the last two weeks, how often have you felt bad about yourself—or that you are a failure or have let yourself or your family down?",
+            "Over the last two weeks, how often have you had trouble concentrating on things, such as reading or watching TV?",
+            "Over the last two weeks, how often have you been moving or speaking so slowly that other people could have noticed? Or the opposite—being so fidgety or restless that you have been moving around a lot more than usual?",
+            "Over the last two weeks, how often have you had thoughts that you would be better off dead or of hurting yourself in some way?"
+        ];
+
+        let currentQuestionIndex = 0;
+        const responses = [];
+
+        function showQuestion(index) {
+            if (index < 0 || index >= questions.length) return;
+            document.getElementById("question-text").textContent = questions[index];
+
+            const optionsContainer = document.getElementById("options-container");
+            optionsContainer.innerHTML = "";
+
+            // Radio button options
+            const options = [
+                { value: 0, text: "Not at all 😃" },
+                { value: 1, text: "Several days 😊" },
+                { value: 2, text: "More than half the days 😐" },
+                { value: 3, text: "Nearly every day ☹️" }
+            ];
+
+            options.forEach(option => {
+                const label = document.createElement("label");
+                label.style.display = "block";
+
+                const radio = document.createElement("input");
+                radio.type = "radio";
+                radio.name = "question";
+                radio.value = option.value;
+                radio.required = true;
+
+                if (responses[index] === option.value) {
+                    radio.checked = true;
+                }
+
+                label.appendChild(radio);
+                label.appendChild(document.createTextNode(option.text));
+                optionsContainer.appendChild(label);
+            });
+
+            document.getElementById("prev-btn").style.display = index > 0 ? "inline-block" : "none";
+            document.getElementById("next-btn").style.display = index < questions.length - 1 ? "inline-block" : "none";
+            document.getElementById("submit-btn").style.display = index === questions.length - 1 ? "inline-block" : "none";
+
+            const progress = Math.min(((index + 1) / questions.length) * 100, 100);
+            document.getElementById("progress-bar").style.width = progress + "%";
+
+        }
+
+        document.getElementById("next-btn").addEventListener("click", () => {
+            const selectedOption = document.querySelector('input[name="question"]:checked');
+            if (!selectedOption) {
+                alert("Please select a response.");
+                return;
+            }
+            responses[currentQuestionIndex] = parseInt(selectedOption.value);
+            console.log("Stored Responses:", responses);
+            currentQuestionIndex++;
+            showQuestion(currentQuestionIndex);
+        });
+
+        document.getElementById("prev-btn").addEventListener("click", () => {
+            currentQuestionIndex--;
+            showQuestion(currentQuestionIndex);
+        });
+
+        document.getElementById("phq9-form").addEventListener("submit", async (event) => {
             event.preventDefault();
 
-            const phq9Responses = [];
-            for (let i = 1; i <= 9; i++) {
-                const inputId = `phq${i}`;
-                const inputValue = document.getElementById(inputId).value;
-                if (inputValue === "" || isNaN(inputValue)) {
-                    alert("Please answer all PHQ-9 questions.");
-                    return;
-                }
-                phq9Responses.push(parseInt(inputValue));
+            const selectedOption = document.querySelector('input[name="question"]:checked');
+            if (!selectedOption) {
+                alert("Please select a response for the last question.");
+                return;
+            }
+        
+            // Ensure last answer is stored before submission
+            responses[currentQuestionIndex] = parseInt(selectedOption.value);
+        
+            // Debugging: Print final stored responses before sending
+            console.log("Final Stored Responses:", responses);
+        
+            if (responses.length !== 9 || responses.includes(undefined)) {
+                alert("Please answer all PHQ-9 questions.");
+                return;
             }
 
             const userId = "user123"; // Replace with actual user ID if needed
@@ -101,26 +180,25 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         user_id: userId,
-                        phq9_responses: phq9Responses
+                        phq9_responses: responses
                     })
                 });
 
                 const data = await response.json();
                 if (data.redirect) {
                     window.location.href = "/icd10";
-                } else if (data.summary && data.feedback) {
-                    document.getElementById('summary').textContent = data.summary;
-                    document.getElementById('feedback').textContent = data.feedback;
                 } else {
                     alert('Error processing assessment: ' + (data.error || "Unknown error"));
-                    if (data.summary) {
-                        document.getElementById('summary').textContent = data.summary;
-                    }
                 }
             } catch (error) {
                 alert('Error: ' + error.message);
             }
         });
+
+        window.onload = function() {
+            showQuestion(currentQuestionIndex);
+            document.getElementById("question-container").style.display = "block";
+        };
     </script>
 
 </body>
